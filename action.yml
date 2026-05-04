@@ -28,7 +28,7 @@ runs:
       run: |
         # Use the fixed path for CLI installation
         if [ "${{ inputs.version }}" = "latest" ]; then
-          go install github.com/stillsystems/nexus-v/cmd/nexus-v@latest
+          go install github.com/stillsystems/nexus-v/cmd/nexus-v@v0.2.16
         else
           go install github.com/stillsystems/nexus-v/cmd/nexus-v@${{ inputs.version }}
         fi
