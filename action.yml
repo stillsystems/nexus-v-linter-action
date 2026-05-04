@@ -26,6 +26,7 @@ runs:
     - name: Install Nexus-V
       shell: bash
       run: |
+        # Use the fixed path for CLI installation
         if [ "${{ inputs.version }}" = "latest" ]; then
           go install github.com/stillsystems/nexus-v/cmd/nexus-v@latest
         else
