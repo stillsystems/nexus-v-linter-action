@@ -1,0 +1,38 @@
+name: 'Nexus-V Linter'
+description: 'Automated validation and linting for Nexus-V templates.'
+author: 'Still Systems'
+branding:
+  icon: 'check-circle'
+  color: 'blue'
+
+inputs:
+  path:
+    description: 'Path to the template directory'
+    required: false
+    default: '.'
+  version:
+    description: 'Nexus-V version to use'
+    required: false
+    default: 'latest'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Install Nexus-V
+      shell: bash
+      run: |
+        if [ "${{ inputs.version }}" = "latest" ]; then
+          go install github.com/stillsystems/nexus-v/cmd/nexus-v@latest
+        else
+          go install github.com/stillsystems/nexus-v/cmd/nexus-v@${{ inputs.version }}
+        fi
+
+    - name: Run Validation
+      shell: bash
+      run: |
+        nexus-v validate ${{ inputs.path }}
