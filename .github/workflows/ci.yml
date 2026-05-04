@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Linter Action on itself (should fail as it is not a template)
+        id: lint_fail
+        continue-on-error: true
+        uses: ./
+        with:
+          path: '.'
+          
+      - name: Verify failure
+        if: steps.lint_fail.outcome != 'failure'
+        run: exit 1
+
+      - name: Create dummy template
+        run: |
+          mkdir dummy-template
+          cat <<EOF > dummy-template/nexus-template.yaml
+          name: Test Template
+          description: A test template for CI.
+          language: go
+          features:
+            - id: core
+              name: Core Files
+              files: [ "main.go" ]
+          EOF
+          touch dummy-template/main.go
+
+      - name: Run Linter Action on dummy template
+        uses: ./
+        with:
+          path: './dummy-template'
